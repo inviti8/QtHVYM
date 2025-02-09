@@ -23,6 +23,7 @@ ALL RIGHTS RESERVED 2024
 HOME = os.path.expanduser('~')
 FILE_PATH = Path(__file__).parent 
 LOGO_IMG = os.path.join(FILE_PATH,'data', 'logo.png')
+DEFAULT_WIDTH = 400
 APP = QApplication(sys.argv)
 
 class MsgDialog(QDialog):
@@ -473,6 +474,40 @@ class IconLineCopyMsgBox(QDialog):
 
     def copy(self):
          pyperclip.copy(self.text_edit.text())
+
+class ImageMsgBox(QDialog):
+    def __init__(self, msg, img, width=DEFAULT_WIDTH, icon=None, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle(BRAND)
+
+        QBtn = QDialogButtonBox.Ok | QDialogButtonBox.Cancel
+
+        self.buttonBox = QDialogButtonBox(QBtn)
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+
+        layout = QFormLayout()
+        self.setLayout(layout)
+        message = QLabel(msg)
+        ico = None
+        if icon != None:
+            ico = QLabel()
+            ico.setPixmap(QPixmap(icon).scaledToHeight(32, Qt.SmoothTransformation))
+        space = QLabel(' ')
+        if ico:
+             layout.addWidget(ico)
+        imgLabel = QLabel()
+        pixmap = QPixmap(img).scaledToWidth(width, Qt.SmoothTransformation)
+        imgLabel.setPixmap(pixmap)
+        layout.addWidget(message)
+        layout.addRow(space)
+        layout.addWidget(imgLabel)
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+
+    def value(self):
+        return None
+
     
 class FileDialog(QFileDialog):
     def __init__(self, msg, filterTypes=None, parent=None):
@@ -693,6 +728,17 @@ class HVYMMainWindow(QMainWindow):
          self.close()
 
          return result
+
+    def IconImagePopup(self, message, img, width=DEFAULT_WIDTH, icon=None):
+          result = None
+          popup = ImageMsgBox(message, img, width, icon, self)
+          popup.setWindowIcon(self.WIN_ICON)
+          if popup.exec():
+                result = popup.value()
+          self.value = result
+          self.close()
+
+          return result
     
     def FilePopup(self, msg, filters=None):
          result = None
@@ -760,5 +806,7 @@ class HVYMInteraction(HVYMMainWindow):
     def file_select_popup(self, msg, filters=None, icon=str(LOGO_IMG)):
       self.call = self.FilePopup(msg, filters)
 
-#sys.exit(APP.exec())
+    def img_popup(self, msg, img, width=DEFAULT_WIDTH, icon=str(LOGO_IMG)):
+      self.call = self.IconImagePopup(msg, img, width, icon)
+
       

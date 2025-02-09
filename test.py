@@ -1,5 +1,7 @@
 from qthvym import *
 
+FILE_PATH = Path(__file__).parent 
+IMG = os.path.join(FILE_PATH, 'img.png')
 
 def splash():
     interaction = HVYMInteraction()
@@ -58,6 +60,12 @@ def file_select_popup():
 
       return interaction
 
+def img_popup():
+      interaction = HVYMInteraction()
+      interaction.img_popup("TEST", IMG)
+
+      return interaction
+
 
 #splash()
 #msg_popup()
@@ -69,7 +77,8 @@ def file_select_popup():
 #print(copy_text_popup().value)
 #print(choice_popup().value)
 #print(file_select_popup().value)
-    
+img_popup()
+
 
 
 
