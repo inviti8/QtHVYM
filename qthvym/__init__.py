@@ -37,12 +37,10 @@ def basic_qr_code(data):
         error_correction=qrcode.constants.ERROR_CORRECT_L,
         box_size=10,
         border=4,
-        back_color=(255, 195, 235),
-        fill_color=(55, 95, 35)
     )
     qr.add_data(data)
     qr.make(fit=True)
-    img = qr.make_image(fill_color = 'red', back_color = 'white', image_factory=StyledPilImage, module_drawer=RoundedModuleDrawer())
+    img = qr.make_image(image_factory=StyledPilImage, module_drawer=RoundedModuleDrawer())
     qr = None
     with tempfile.NamedTemporaryFile(suffix='.png', delete=True) as f:
         img.save(f, format='PNG') 
