@@ -4,11 +4,16 @@ __version__ = "0.01"
 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QSplashScreen, QLabel, QGridLayout, QWidget, QCheckBox, QFormLayout, QSystemTrayIcon, QComboBox, QTextEdit, QLineEdit, QDialogButtonBox, QSpacerItem, QSizePolicy, QMenu, QAction, QStyle, qApp, QVBoxLayout, QPushButton, QDialog, QDesktopWidget, QFileDialog, QMessageBox
 from PyQt5.QtCore import Qt, QSize, QTimer
-from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5.QtGui import QIcon, QPixmap, QImage
 from qtwidgets import PasswordEdit
 from pathlib import Path
 import pkg_resources
 import pyperclip
+import tempfile
+import qrcode
+from qrcode.image.styledpil import StyledPilImage
+from qrcode.image.styles.moduledrawers.pil import RoundedModuleDrawer
+from qrcode.image.styles.colormasks import RadialGradiantColorMask
 import copy
 import sys
 import os
@@ -25,6 +30,26 @@ FILE_PATH = Path(__file__).parent
 LOGO_IMG = os.path.join(FILE_PATH,'data', 'logo.png')
 DEFAULT_WIDTH = 400
 APP = QApplication(sys.argv)
+
+def basic_qr_code(data):
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+        back_color=(255, 195, 235),
+        fill_color=(55, 95, 35)
+    )
+    qr.add_data(data)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color = 'red', back_color = 'white', image_factory=StyledPilImage, module_drawer=RoundedModuleDrawer())
+    qr = None
+    with tempfile.NamedTemporaryFile(suffix='.png', delete=True) as f:
+        img.save(f, format='PNG') 
+        qr = QImage(f.name)
+
+    return qr
+
 
 class MsgDialog(QDialog):
     def __init__(self, msg, parent=None):
@@ -480,12 +505,6 @@ class ImageMsgBox(QDialog):
         super().__init__(parent)
         self.setWindowTitle(BRAND)
 
-        QBtn = QDialogButtonBox.Ok | QDialogButtonBox.Cancel
-
-        self.buttonBox = QDialogButtonBox(QBtn)
-        self.buttonBox.accepted.connect(self.accept)
-        self.buttonBox.rejected.connect(self.reject)
-
         layout = QFormLayout()
         self.setLayout(layout)
         message = QLabel(msg)
@@ -502,13 +521,37 @@ class ImageMsgBox(QDialog):
         layout.addWidget(message)
         layout.addRow(space)
         layout.addWidget(imgLabel)
-        self.buttonBox.accepted.connect(self.accept)
-        self.buttonBox.rejected.connect(self.reject)
 
     def value(self):
         return None
 
-    
+class QrMsgBox(QDialog):
+    def __init__(self, msg, data, width=DEFAULT_WIDTH, icon=None, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle(BRAND)
+
+        layout = QFormLayout()
+        self.setLayout(layout)
+        message = QLabel(msg)
+        ico = None
+        if icon:
+            ico = QLabel()
+            ico.setPixmap(QPixmap(icon).scaledToHeight(32, Qt.SmoothTransformation))
+        space = QLabel(' ')
+        if ico:
+            layout.addWidget(ico)
+        qr_label = QLabel()
+        qr_code_img = basic_qr_code(data)  # New method to be implemented
+        pixmap = QPixmap.fromImage(qr_code_img).scaledToWidth(width, Qt.SmoothTransformation)
+        qr_label.setPixmap(pixmap)
+        layout.addWidget(message)
+        layout.addRow(space)
+        layout.addWidget(qr_label)
+
+    def value(self):
+        return None
+
+
 class FileDialog(QFileDialog):
     def __init__(self, msg, filterTypes=None, parent=None):
         super().__init__(parent)
@@ -739,6 +782,17 @@ class HVYMMainWindow(QMainWindow):
           self.close()
 
           return result
+
+    def IconQrPopup(self, message, data, width=DEFAULT_WIDTH, icon=None):
+          result = None
+          popup = QrMsgBox(message, data, width, icon, self)
+          popup.setWindowIcon(self.WIN_ICON)
+          if popup.exec():
+                result = popup.value()
+          self.value = result
+          self.close()
+
+          return result
     
     def FilePopup(self, msg, filters=None):
          result = None
@@ -808,5 +862,8 @@ class HVYMInteraction(HVYMMainWindow):
 
     def img_popup(self, msg, img, width=DEFAULT_WIDTH, icon=str(LOGO_IMG)):
       self.call = self.IconImagePopup(msg, img, width, icon)
+
+    def qr_popup(self, msg, data, width=DEFAULT_WIDTH, icon=str(LOGO_IMG)):
+      self.call = self.IconQrPopup(msg, data, width, icon)
 
       

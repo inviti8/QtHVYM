@@ -66,6 +66,12 @@ def img_popup():
 
       return interaction
 
+def qr_popup():
+      interaction = HVYMInteraction()
+      interaction.qr_popup("TEST", "dsfsdfsdfWEidjwqofhrqhddnialdjaidadnwquhdfuoihwudhahawudhauiodhawudhawudhauwhauiwdh")
+
+      return interaction
+
 
 #splash()
 #msg_popup()
@@ -77,7 +83,9 @@ def img_popup():
 #print(copy_text_popup().value)
 #print(choice_popup().value)
 #print(file_select_popup().value)
-img_popup()
+#img_popup()
+qr_popup()
+
 
 
 
