@@ -9,11 +9,6 @@ readme = "README.md"
 license = {file = "LICENSE"}
 classifiers = ["License :: OSI Approved :: MIT License"]
 dynamic = ["version", "description"]
-
-[options]
-python_requires = ">=3.9.18"
-include_package_data = true
-
 dependencies = [
     "certifi==2025.1.31",
     "charset-normalizer==3.4.1",
@@ -36,5 +31,9 @@ dependencies = [
     "zipp==3.21.0"
 ]
 
+[options]
+python_requires = ">=3.9.18"
+include_package_data = true
+
 [project.urls]
-Home = "https://github.com/inviti8/qthvym"
+Home = "https://github.com/inviti8/QtHVYM"
