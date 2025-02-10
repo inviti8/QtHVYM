@@ -3,6 +3,7 @@ from qthvym import *
 FILE_PATH = Path(__file__).parent 
 IMG = os.path.join(FILE_PATH, 'img.png')
 
+
 def splash():
     interaction = HVYMInteraction()
     interaction.splash("TEST!!")
@@ -68,7 +69,31 @@ def img_popup():
 
 def qr_popup():
       interaction = HVYMInteraction()
-      interaction.qr_popup("TEST", "dsfsdfsdfWEidjwqofhrqhddnialdjaidadnwquhdfuoihwudhahawudhauiodhawudhawudhauwhauiwdh")
+      interaction.qr_popup("TEST", "This is some test data")
+
+      return interaction
+
+def qr_copy_popup():
+      interaction = HVYMInteraction()
+      interaction.qr_copy_popup("TEST", "This is some test data")
+
+      return interaction
+
+def custom_qr_popup():
+      interaction = HVYMInteraction()
+      interaction.custom_qr_popup("TEST", "This is some test data", 400, IMG, (249, 194, 10), (127, 36, 103))
+
+      return interaction
+
+def xro_qr_popup():
+      interaction = HVYMInteraction()
+      interaction.xro_qr_popup("Send Tokens Here:", "This is some test data")
+
+      return interaction
+
+def icp_qr_popup():
+      interaction = HVYMInteraction()
+      interaction.icp_qr_popup("Send Tokens Here:", "This is some test data")
 
       return interaction
 
@@ -84,7 +109,10 @@ def qr_popup():
 #print(choice_popup().value)
 #print(file_select_popup().value)
 #img_popup()
-qr_popup()
+#qr_popup()
+qr_copy_popup()
+#custom_qr_popup()
+#xro_qr_popup()
 
 
 

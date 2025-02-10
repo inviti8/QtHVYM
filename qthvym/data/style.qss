@@ -43,6 +43,20 @@ QWidget
     outline: 0;
 }
 
+QWidget#XRO_QR
+{
+    color: #F9950A;
+    background-color: #7F2467;
+    selection-background-color: #7F2467;
+}
+
+QWidget#ICP_QR
+{
+    color: #8864D4;
+    background-color: #460EBD;
+    selection-background-color: #460EBD;
+}
+
 QWidget:item:hover
 {
     background-color: #fff4c9;
@@ -746,7 +760,9 @@ QLabel
     margin-left: 2px;
     margin-right: 2px;
     color: #fff4c9;
+    font: 12pt
 }
+
 
 QTabWidget{
     border: 0px transparent black;
@@ -1144,7 +1160,7 @@ QHeaderView
 }
 
 QHeaderView::section  {
-    background-color: #98314a;
+    background-color: #ffffff;
     color: #eff0f1;
     padding: 5px;
     border: 1px solid #76797C;

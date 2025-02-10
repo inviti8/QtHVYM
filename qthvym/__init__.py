@@ -7,13 +7,14 @@ from PyQt5.QtCore import Qt, QSize, QTimer
 from PyQt5.QtGui import QIcon, QPixmap, QImage
 from qtwidgets import PasswordEdit
 from pathlib import Path
-import pkg_resources
 import pyperclip
 import tempfile
 import qrcode
 from qrcode.image.styledpil import StyledPilImage
 from qrcode.image.styles.moduledrawers.pil import RoundedModuleDrawer
+from qrcode.image.styles.colormasks import SolidFillColorMask
 from qrcode.image.styles.colormasks import RadialGradiantColorMask
+from PIL import Image, ImageDraw
 import copy
 import sys
 import os
@@ -27,20 +28,53 @@ ALL RIGHTS RESERVED 2024
 """
 HOME = os.path.expanduser('~')
 FILE_PATH = Path(__file__).parent 
-LOGO_IMG = os.path.join(FILE_PATH,'data', 'logo.png')
+HVYM_LOGO_IMG = os.path.join(FILE_PATH,'data', 'logo.png')
+HVYM_IMG = os.path.join(FILE_PATH,'data', 'hvym.png')
+XRO_LOGO_IMG = os.path.join(FILE_PATH,'data', 'xro_logo.png')
+ICP_LOGO_IMG = os.path.join(FILE_PATH,'data', 'dfinity_logo.png')
 DEFAULT_WIDTH = 400
+HVYM_BG_RGB = (152, 49, 74)
+HVYM_FG_RGB = (175, 232, 197)
+XRO_BG_RGB = (249, 194, 10)
+XRO_FG_RGB = (127, 36, 103)
+ICP_BG_RGB = (136, 100, 212)
+ICP_FG_RGB = (70, 14, 189)
 APP = QApplication(sys.argv)
 
 def basic_qr_code(data):
     qr = qrcode.QRCode(
         version=1,
-        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        error_correction=qrcode.constants.ERROR_CORRECT_H,
         box_size=10,
         border=4,
     )
     qr.add_data(data)
     qr.make(fit=True)
-    img = qr.make_image(image_factory=StyledPilImage, module_drawer=RoundedModuleDrawer())
+    img = qr.make_image(image_factory=StyledPilImage, 
+        module_drawer=RoundedModuleDrawer(),
+        color_mask=SolidFillColorMask(back_color=HVYM_BG_RGB, front_color=HVYM_FG_RGB),
+        embeded_image_path=HVYM_IMG)
+    qr = None
+    with tempfile.NamedTemporaryFile(suffix='.png', delete=True) as f:
+        img.save(f, format='PNG') 
+        qr = QImage(f.name)
+
+    return qr
+
+
+def custom_qr_code(data, cntrImg, back_color=HVYM_BG_RGB, front_color=HVYM_FG_RGB):
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_H,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(data)
+    qr.make(fit=True)
+    img = qr.make_image(image_factory=StyledPilImage, 
+        module_drawer=RoundedModuleDrawer(),
+        color_mask=SolidFillColorMask(back_color=back_color, front_color=front_color),
+        embeded_image_path=cntrImg)
     qr = None
     with tempfile.NamedTemporaryFile(suffix='.png', delete=True) as f:
         img.save(f, format='PNG') 
@@ -539,7 +573,7 @@ class QrMsgBox(QDialog):
         if ico:
             layout.addWidget(ico)
         qr_label = QLabel()
-        qr_code_img = basic_qr_code(data)  # New method to be implemented
+        qr_code_img = basic_qr_code(data) 
         pixmap = QPixmap.fromImage(qr_code_img).scaledToWidth(width, Qt.SmoothTransformation)
         qr_label.setPixmap(pixmap)
         layout.addWidget(message)
@@ -548,6 +582,133 @@ class QrMsgBox(QDialog):
 
     def value(self):
         return None
+    
+class QrCopyMsgBox(QDialog):
+    def __init__(self, msg, data, width=DEFAULT_WIDTH, icon=None, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle(BRAND)
+        self.copyBtn = QPushButton("Copy")
+        self.okBtn = QPushButton("OK")
+        self.copyBtn.clicked.connect(self.copy)
+        self.okBtn.clicked.connect(self.close)
+
+        layout = QFormLayout()
+        self.setLayout(layout)
+        message = QLabel(msg)
+        ico = None
+        if icon:
+            ico = QLabel()
+            ico.setPixmap(QPixmap(icon).scaledToHeight(32, Qt.SmoothTransformation))
+        space = QLabel(' ')
+        if ico:
+            layout.addWidget(ico)
+        qr_label = QLabel()
+        qr_code_img = basic_qr_code(data) 
+        pixmap = QPixmap.fromImage(qr_code_img).scaledToWidth(width, Qt.SmoothTransformation)
+        qr_label.setPixmap(pixmap)
+        self.text_edit = QLineEdit(self)
+        self.text_edit.setText(data)
+        layout.addWidget(message)
+        layout.addRow(space)
+        layout.addWidget(qr_label)
+        layout.addRow(self.text_edit)
+        layout.addRow(space)
+        layout.addRow(self.copyBtn)
+        layout.addRow(self.okBtn)
+
+    def value(self):
+        return None
+    
+    def copy(self):
+         pyperclip.copy(self.text_edit.text())
+         QApplication.processEvents() 
+
+
+class CustomQrMsgBox(QDialog):
+    def __init__(self, msg, data, width=DEFAULT_WIDTH, cntrImg=HVYM_IMG, back_color=HVYM_BG_RGB, front_color=HVYM_FG_RGB, id=None, icon=None, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle(BRAND)
+        self.needStyle = []
+        self.needStyle.append(self)
+        layout = QFormLayout()
+        self.setLayout(layout)
+        message = QLabel(msg)
+        self.needStyle.append(message)
+        ico = None
+        if icon:
+            ico = QLabel()
+            ico.setPixmap(QPixmap(icon).scaledToHeight(32, Qt.SmoothTransformation))
+
+        if ico:
+            layout.addWidget(ico)
+        qr_label = QLabel()
+        self.needStyle.append(qr_label)
+        qr_code_img = custom_qr_code(data, cntrImg, front_color, back_color)
+        pixmap = QPixmap.fromImage(qr_code_img).scaledToWidth(width, Qt.SmoothTransformation)
+        qr_label.setPixmap(pixmap)
+
+        if id != None:
+            for w in self.needStyle:
+                w.setObjectName(id)
+
+        layout.addWidget(message)
+        layout.addWidget(qr_label)
+
+    def value(self):
+        return None
+    
+    
+class CustomQrCopyMsgBox(QDialog):
+    def __init__(self, msg, data, width=DEFAULT_WIDTH, cntrImg=HVYM_IMG, back_color=HVYM_BG_RGB, front_color=HVYM_FG_RGB, id=None, icon=None, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle(BRAND)
+        self.needStyle = []
+        self.needStyle.append(self)
+        self.copyBtn = QPushButton("Copy")
+        self.needStyle.append(self.copyBtn)
+        self.okBtn = QPushButton("OK")
+        self.needStyle.append(self.okBtn)
+        self.copyBtn.clicked.connect(self.copy)
+        self.okBtn.clicked.connect(self.close)
+        layout = QFormLayout()
+        self.setLayout(layout)
+        message = QLabel(msg)
+        self.needStyle.append(message)
+        ico = None
+        if icon:
+            ico = QLabel()
+            ico.setPixmap(QPixmap(icon).scaledToHeight(32, Qt.SmoothTransformation))
+
+        if ico:
+            layout.addWidget(ico)
+
+        space = QLabel(' ')
+        self.needStyle.append(space)
+        qr_label = QLabel()
+        self.needStyle.append(qr_label)
+        self.text_edit = QLineEdit(self)
+        self.text_edit.setText(data)
+        self.needStyle.append(self.text_edit)
+        qr_code_img = custom_qr_code(data, cntrImg, front_color, back_color)
+        pixmap = QPixmap.fromImage(qr_code_img).scaledToWidth(width, Qt.SmoothTransformation)
+        qr_label.setPixmap(pixmap)
+
+        if id != None:
+            for w in self.needStyle:
+                w.setObjectName(id)
+
+        layout.addRow(message)
+        layout.addRow(qr_label)
+        layout.addRow(self.text_edit)
+        layout.addRow(space)
+        layout.addRow(self.copyBtn)
+        layout.addRow(self.okBtn)
+
+    def value(self):
+        return None
+    
+    def copy(self):
+         pyperclip.copy(self.text_edit.text())
 
 
 class FileDialog(QFileDialog):
@@ -574,7 +735,7 @@ class HVYMMainWindow(QMainWindow):
       QMainWindow.__init__(self)
       self.FILE_PATH = Path(__file__).parent
       self.HVYM_IMG = os.path.join(self.FILE_PATH, 'data', 'hvym.png')
-      self.LOGO_IMG = os.path.join(self.FILE_PATH, 'data', 'logo.png')
+      self.HVYM_LOGO_IMG = os.path.join(self.FILE_PATH, 'data', 'logo.png')
       self.WIN_ICON = QIcon(self.HVYM_IMG)
       self.STYLE_SHEET = os.path.join(self.FILE_PATH, 'data', 'style.qss')
       self.value = None
@@ -585,7 +746,7 @@ class HVYMMainWindow(QMainWindow):
       # Set the central widget
       self.setCentralWidget(central_widget)
       label = QLabel("", self)
-      label.setPixmap(QPixmap(self.LOGO_IMG))
+      label.setPixmap(QPixmap(self.HVYM_LOGO_IMG))
       label.adjustSize()
 
       self.setWindowIcon(self.WIN_ICON)
@@ -792,6 +953,39 @@ class HVYMMainWindow(QMainWindow):
 
           return result
     
+    def IconCopyQrPopup(self, message, data, width=DEFAULT_WIDTH, icon=None):
+          result = None
+          popup = QrCopyMsgBox(message, data, width, icon, self)
+          popup.setWindowIcon(self.WIN_ICON)
+          if popup.exec():
+                result = popup.value()
+          self.value = result
+          self.close()
+
+          return result
+
+    def IconCustomQrPopup(self, message, data, width=DEFAULT_WIDTH, cntrImg=HVYM_IMG, back_color=HVYM_BG_RGB, front_color=HVYM_FG_RGB, id=None, icon=None):
+        result = None
+        popup = CustomQrMsgBox(message, data, width, cntrImg, back_color, front_color, id, icon, self)
+        popup.setWindowIcon(self.WIN_ICON)
+        if popup.exec():
+            result = popup.value()
+        self.value = result
+        self.close()
+
+        return result
+    
+    def IconCustomQrCopyPopup(self, message, data, width=DEFAULT_WIDTH, cntrImg=HVYM_IMG, back_color=HVYM_BG_RGB, front_color=HVYM_FG_RGB, id=None, icon=None):
+        result = None
+        popup = CustomQrCopyMsgBox(message, data, width, cntrImg, back_color, front_color, id, icon, self)
+        popup.setWindowIcon(self.WIN_ICON)
+        if popup.exec():
+            result = popup.value()
+        self.value = result
+        self.close()
+
+        return result
+
     def FilePopup(self, msg, filters=None):
          result = None
          popup = FileDialog(msg, filters, self)
@@ -816,52 +1010,65 @@ class HVYMInteraction(HVYMMainWindow):
     def splash(self, msg, duration = 3000):
       self.splashScreen(msg, duration)
 
-    def msg_popup(self, msg, icon=str(LOGO_IMG)):
+    def msg_popup(self, msg, icon=str(HVYM_LOGO_IMG)):
       if icon == None:
            self.call = self.MessagePopup(msg)
       else:
            self.call = self.IconMessagePopup(msg, icon)
 
-    def choice_popup(self, msg, icon=str(LOGO_IMG)):
+    def choice_popup(self, msg, icon=str(HVYM_LOGO_IMG)):
       if icon == None:
            self.call = self.ChoicePopup(msg)
       else:
            self.call = self.IconChoicePopup(msg, icon)
 
-    def options_popup(self, msg, options, icon=str(LOGO_IMG)):
+    def options_popup(self, msg, options, icon=str(HVYM_LOGO_IMG)):
       if icon == None:
            self.call = self.OptionsPopup(msg, options)
       else:
            self.call = self.IconOptionsPopup(msg, options, icon)
       
-    def edit_line_popup(self, msg, options, defaultText=None, icon=str(LOGO_IMG)):
+    def edit_line_popup(self, msg, options, defaultText=None, icon=str(HVYM_LOGO_IMG)):
       if icon == None:
            self.call = self.EditLinePopup(msg, options, defaultText)
       else:
            self.call = self.IconEditLinePopup(msg, options, defaultText, icon)
 
-    def user_popup(self, msg, icon=str(LOGO_IMG)):
+    def user_popup(self, msg, icon=str(HVYM_LOGO_IMG)):
       self.call = self.IconUserPopup(msg, icon)
 
-    def password_popup(self, msg, icon=str(LOGO_IMG)):
+    def password_popup(self, msg, icon=str(HVYM_LOGO_IMG)):
       self.call = self.IconPasswordPopup(msg, icon)
 
-    def user_password_popup(self, msg, defaultText=None, icon=str(LOGO_IMG)):
+    def user_password_popup(self, msg, defaultText=None, icon=str(HVYM_LOGO_IMG)):
       self.call = self.IconUserPasswordPopup(msg, defaultText, icon)
       
-    def copy_line_popup(self, msg, defaultText=None, icon=str(LOGO_IMG)):
+    def copy_line_popup(self, msg, defaultText=None, icon=str(HVYM_LOGO_IMG)):
       self.call = self.IconCopyLinePopup(msg, defaultText, icon)
 
-    def copy_text_popup(self, msg, defaultText=None, icon=str(LOGO_IMG)):
+    def copy_text_popup(self, msg, defaultText=None, icon=str(HVYM_LOGO_IMG)):
       self.call = self.IconCopyTextPopup(msg, defaultText, icon) 
 
-    def file_select_popup(self, msg, filters=None, icon=str(LOGO_IMG)):
+    def file_select_popup(self, msg, filters=None, icon=str(HVYM_LOGO_IMG)):
       self.call = self.FilePopup(msg, filters)
 
-    def img_popup(self, msg, img, width=DEFAULT_WIDTH, icon=str(LOGO_IMG)):
+    def img_popup(self, msg, img, width=DEFAULT_WIDTH, icon=str(HVYM_LOGO_IMG)):
       self.call = self.IconImagePopup(msg, img, width, icon)
 
-    def qr_popup(self, msg, data, width=DEFAULT_WIDTH, icon=str(LOGO_IMG)):
+    def qr_popup(self, msg, data, width=DEFAULT_WIDTH, icon=str(HVYM_LOGO_IMG)):
       self.call = self.IconQrPopup(msg, data, width, icon)
+
+    def qr_copy_popup(self, msg, data, width=DEFAULT_WIDTH, icon=str(HVYM_LOGO_IMG)):
+      self.call = self.IconCopyQrPopup(msg, data, width, icon)
+
+    def custom_qr_popup(self, msg, data, width=DEFAULT_WIDTH, cntrImg=HVYM_IMG, back_color=HVYM_BG_RGB, front_color=HVYM_FG_RGB, id=None, icon=str(HVYM_LOGO_IMG)):
+      self.call = self.IconCustomQrPopup(msg, data, width, cntrImg, back_color, front_color, icon)
+
+    def xro_qr_popup(self, msg, data):
+      self.setObjectName('XRO_QR')
+      self.call = self.IconCustomQrCopyPopup(msg, data, DEFAULT_WIDTH, XRO_LOGO_IMG, XRO_BG_RGB, XRO_FG_RGB, 'XRO_QR')
+
+    def icp_qr_popup(self, msg, data):
+      self.call = self.IconCustomQrCopyPopup(msg, data, DEFAULT_WIDTH, ICP_LOGO_IMG, ICP_BG_RGB, ICP_FG_RGB, 'ICP_QR')
 
       
