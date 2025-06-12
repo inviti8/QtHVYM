@@ -91,6 +91,18 @@ def xro_qr_popup():
 
       return interaction
 
+def opus_qr_popup():
+      interaction = HVYMInteraction()
+      interaction.opus_qr_popup("Send Tokens Here:", "This is some test data")
+
+      return interaction
+
+def stellar_qr_popup():
+      interaction = HVYMInteraction()
+      interaction.stellar_qr_popup("Send Tokens Here:", "This is some test data")
+
+      return interaction
+
 def icp_qr_popup():
       interaction = HVYMInteraction()
       interaction.icp_qr_popup("Send Tokens Here:", "This is some test data")
@@ -110,9 +122,11 @@ def icp_qr_popup():
 #print(file_select_popup().value)
 #img_popup()
 #qr_popup()
-qr_copy_popup()
+#qr_copy_popup()
 #custom_qr_popup()
 #xro_qr_popup()
+opus_qr_popup()
+#stellar_qr_popup()
 
 
 

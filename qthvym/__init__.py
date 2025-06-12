@@ -1,6 +1,6 @@
 """QT5 UI Elements For HVYM, By: Fibo Metavinci"""
 
-__version__ = "0.06"
+__version__ = "0.07"
 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QSplashScreen, QLabel, QGridLayout, QWidget, QCheckBox, QFormLayout, QSystemTrayIcon, QComboBox, QTextEdit, QLineEdit, QDialogButtonBox, QSpacerItem, QSizePolicy, QMenu, QAction, QStyle, qApp, QVBoxLayout, QPushButton, QDialog, QDesktopWidget, QFileDialog, QMessageBox
 from PyQt5.QtCore import Qt, QSize, QTimer
@@ -31,15 +31,24 @@ FILE_PATH = Path(__file__).parent
 HVYM_LOGO_IMG = os.path.join(FILE_PATH,'data', 'logo.png')
 HVYM_IMG = os.path.join(FILE_PATH,'data', 'hvym.png')
 XRO_LOGO_IMG = os.path.join(FILE_PATH,'data', 'xro_logo.png')
+OPUS_LOGO_IMG = os.path.join(FILE_PATH,'data', 'opus_logo.png')
+STELLAR_LOGO_IMG = os.path.join(FILE_PATH,'data', 'stellar_logo.png')
 ICP_LOGO_IMG = os.path.join(FILE_PATH,'data', 'dfinity_logo.png')
 DEFAULT_WIDTH = 400
 HVYM_BG_RGB = (152, 49, 74)
 HVYM_FG_RGB = (175, 232, 197)
 XRO_BG_RGB = (249, 194, 10)
 XRO_FG_RGB = (127, 36, 103)
+OPUS_BG_RGB = (249, 194, 10)
+OPUS_FG_RGB = (119, 36, 127)
+STELLAR_BG_RGB = (0, 0, 0)
+STELLAR_FG_RGB = (236, 240, 243)
 ICP_BG_RGB = (136, 100, 212)
 ICP_FG_RGB = (70, 14, 189)
 APP = QApplication(sys.argv)
+
+MIN_WIDTH = 300
+MIN_HEIGHT = 250
 
 def basic_qr_code(data):
     qr = qrcode.QRCode(
@@ -418,17 +427,19 @@ class IconUserPasswordTextMsgBox(QDialog):
         if icon != None:
             img = QLabel()
             img.setPixmap(QPixmap(icon).scaledToHeight(32, Qt.SmoothTransformation))
-        space = QLabel(' ')
+        space1 = QLabel(' ')
+        space2 = QLabel(' ')
         if img:
              layout.addRow(img)
         layout.addRow(message)
+        layout.addRow(space1)
         self.acct = QLineEdit(self)
         self.pw = PasswordEdit(self)
         layout.addRow(self.acct_lbl)
         layout.addRow(self.acct)
         layout.addRow(self.pw_lbl)
         layout.addRow(self.pw)
-        layout.addRow(space)
+        layout.addRow(space2)
         layout.addRow(self.buttonBox)
 
         if defaultTxt != None:
@@ -779,12 +790,16 @@ class HVYMMainWindow(QMainWindow):
     def MessagePopup(self, message):
           popup = MsgDialog(message, self)
           popup.setWindowIcon(self.WIN_ICON)
+          popup.setMinimumSize(MIN_WIDTH, MIN_HEIGHT)
+          popup.setMaximumSize(MIN_WIDTH+50, MIN_HEIGHT+75)
           popup.exec()
           self.close()
 
     def IconMessagePopup(self, message, icon):
           popup = IconMsgBox(message, icon, self)
           popup.setWindowIcon(self.WIN_ICON)
+          popup.setMinimumSize(MIN_WIDTH, MIN_HEIGHT)
+          popup.setMaximumSize(MIN_WIDTH+50, MIN_HEIGHT+75)
           popup.exec()
           self.close()
 
@@ -792,6 +807,8 @@ class HVYMMainWindow(QMainWindow):
           result = 'CANCEL'
           popup = ChoiceDialog(message, self)
           popup.setWindowIcon(self.WIN_ICON)
+          popup.setMinimumSize(MIN_WIDTH, MIN_HEIGHT)
+          popup.setMaximumSize(MIN_WIDTH+50, MIN_HEIGHT+75)
           if popup.exec():
                 result = 'OK'
           self.value = result
@@ -803,6 +820,8 @@ class HVYMMainWindow(QMainWindow):
           result = 'CANCEL'
           popup = IconChoiceMsgBox(message, icon, self)
           popup.setWindowIcon(self.WIN_ICON)
+          popup.setMinimumSize(MIN_WIDTH-50, MIN_HEIGHT-100)
+          popup.setMaximumSize(MIN_WIDTH+50, MIN_HEIGHT+75)
           if popup.exec():
                 result = 'OK'
           self.value = result
@@ -814,6 +833,8 @@ class HVYMMainWindow(QMainWindow):
           result = None
           popup = OptionsDialog(message, options, self)
           popup.setWindowIcon(self.WIN_ICON)
+          popup.setMinimumSize(MIN_WIDTH, MIN_HEIGHT)
+          popup.setMaximumSize(MIN_WIDTH+50, MIN_HEIGHT+75)
           if popup.exec():
                 result = popup.value()
           self.value = result
@@ -825,6 +846,8 @@ class HVYMMainWindow(QMainWindow):
           result = None
           popup = IconOptionsMsgBox(message, options, icon, self)
           popup.setWindowIcon(self.WIN_ICON)
+          popup.setMinimumSize(MIN_WIDTH, MIN_HEIGHT)
+          popup.setMaximumSize(MIN_WIDTH+50, MIN_HEIGHT+75)
           if popup.exec():
                 result = popup.value()
           self.value = result
@@ -858,6 +881,8 @@ class HVYMMainWindow(QMainWindow):
           result = None
           popup = IconCopyTextMsgBox(message, defaultText, icon, self)
           popup.setWindowIcon(self.WIN_ICON)
+          popup.setMinimumSize(MIN_WIDTH, MIN_HEIGHT)
+          popup.setMaximumSize(MIN_WIDTH+50, MIN_HEIGHT+75)
           if popup.exec():
                 result = popup.value()
           self.value = result
@@ -891,6 +916,8 @@ class HVYMMainWindow(QMainWindow):
           result = None
           popup = IconLineCopyMsgBox(message, defaultText, icon, self)
           popup.setWindowIcon(self.WIN_ICON)
+          popup.setMinimumSize(MIN_WIDTH, MIN_HEIGHT)
+          popup.setMaximumSize(MIN_WIDTH+50, MIN_HEIGHT)
           if popup.exec():
                 result = popup.value()
           self.value = result
@@ -902,6 +929,8 @@ class HVYMMainWindow(QMainWindow):
          result = None
          popup = IconUserTextMsgBox(message, icon, self)
          popup.setWindowIcon(self.WIN_ICON)
+         popup.setMinimumSize(MIN_WIDTH, MIN_HEIGHT)
+         popup.setMaximumSize(MIN_WIDTH+50, MIN_HEIGHT+75)
          if popup.exec():
                 result = popup.value()
          self.value = result
@@ -913,6 +942,8 @@ class HVYMMainWindow(QMainWindow):
          result = None
          popup = IconPasswordTextMsgBox(message, icon, self)
          popup.setWindowIcon(self.WIN_ICON)
+         popup.setMinimumSize(MIN_WIDTH, MIN_HEIGHT)
+         popup.setMaximumSize(MIN_WIDTH+50, MIN_HEIGHT+75)
          if popup.exec():
                 result = popup.value()
          self.value = result
@@ -924,6 +955,8 @@ class HVYMMainWindow(QMainWindow):
          result = None
          popup = IconUserPasswordTextMsgBox(message, defaultText, icon, self)
          popup.setWindowIcon(self.WIN_ICON)
+         popup.setMinimumSize(MIN_WIDTH, MIN_HEIGHT)
+         popup.setMaximumSize(MIN_WIDTH+50, MIN_HEIGHT+75)
          if popup.exec():
                 result = popup.value()
          self.value = result
@@ -1067,6 +1100,14 @@ class HVYMInteraction(HVYMMainWindow):
     def xro_qr_popup(self, msg, data):
       self.setObjectName('XRO_QR')
       self.call = self.IconCustomQrCopyPopup(msg, data, DEFAULT_WIDTH, XRO_LOGO_IMG, XRO_BG_RGB, XRO_FG_RGB, 'XRO_QR')
+
+    def opus_qr_popup(self, msg, data):
+      self.setObjectName('OPUS_QR')
+      self.call = self.IconCustomQrCopyPopup(msg, data, DEFAULT_WIDTH, OPUS_LOGO_IMG, OPUS_BG_RGB, OPUS_FG_RGB, 'OPUS_QR')
+
+    def stellar_qr_popup(self, msg, data):
+      self.setObjectName('STELLAR_QR')
+      self.call = self.IconCustomQrCopyPopup(msg, data, DEFAULT_WIDTH, STELLAR_LOGO_IMG, STELLAR_BG_RGB, STELLAR_FG_RGB, 'STELLAR_QR')
 
     def icp_qr_popup(self, msg, data):
       self.call = self.IconCustomQrCopyPopup(msg, data, DEFAULT_WIDTH, ICP_LOGO_IMG, ICP_BG_RGB, ICP_FG_RGB, 'ICP_QR')
