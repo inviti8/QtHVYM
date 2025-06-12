@@ -6,33 +6,33 @@ IMG = os.path.join(FILE_PATH, 'img.png')
 
 def splash():
     interaction = HVYMInteraction()
-    interaction.splash("TEST!!")
+    interaction.splash("TEST!! TEST WITH LONG TEXT CAN TEXT WRAP??")
 
 def msg_popup():
       interaction = HVYMInteraction()
-      interaction.msg_popup("TEST!!!")
+      interaction.msg_popup("TEST!!! TEST WITH LONG TEXT CAN TEXT WRAP??")
 
 def options_popup():
       interaction = HVYMInteraction()
-      interaction.options_popup("TEST!!!!!", ['1', '2', '3'])
+      interaction.options_popup("TEST!!!!! TEST WITH LONG TEXT CAN TEXT WRAP??", ['1', '2', '3'])
       
       return interaction
 
 def user_popup():
       interaction = HVYMInteraction()
-      interaction.user_popup("TEST")
+      interaction.user_popup("TEST WITH LONG TEXT CAN TEXT WRAP??")
 
       return interaction
 
 def password_popup():
       interaction = HVYMInteraction()
-      interaction.password_popup("TEST")
+      interaction.password_popup("TEST TEST WITH LONG TEXT CAN TEXT WRAP??")
 
       return interaction
 
 def user_password_popup():
       interaction = HVYMInteraction()
-      interaction.user_password_popup("TEST", "defaultText")
+      interaction.user_password_popup("TEST WITH LONG TEXT CAN TEXT WRAP??", "defaultText")
 
       return interaction
 
@@ -93,19 +93,19 @@ def xro_qr_popup():
 
 def opus_qr_popup():
       interaction = HVYMInteraction()
-      interaction.opus_qr_popup("Send Tokens Here:", "This is some test data")
+      interaction.opus_qr_popup("Send Tokens Here: TEST WITH LONG TEXT CAN TEXT WRAP?? TEST WITH LONG TEXT CAN TEXT WRAP??", "This is some test data")
 
       return interaction
 
 def stellar_qr_popup():
       interaction = HVYMInteraction()
-      interaction.stellar_qr_popup("Send Tokens Here:", "This is some test data")
+      interaction.stellar_qr_popup("Send Tokens Here: TEST WITH LONG TEXT CAN TEXT WRAP?? TEST WITH LONG TEXT CAN TEXT WRAP??", "This is some test data")
 
       return interaction
 
 def icp_qr_popup():
       interaction = HVYMInteraction()
-      interaction.icp_qr_popup("Send Tokens Here:", "This is some test data")
+      interaction.icp_qr_popup("Send Tokens Here: TEST WITH LONG TEXT CAN TEXT WRAP??", "This is some test data")
 
       return interaction
 
@@ -125,7 +125,7 @@ def icp_qr_popup():
 #qr_copy_popup()
 #custom_qr_popup()
 #xro_qr_popup()
-opus_qr_popup()
+#opus_qr_popup()
 #stellar_qr_popup()
 
 

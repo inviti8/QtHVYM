@@ -1,6 +1,6 @@
 """QT5 UI Elements For HVYM, By: Fibo Metavinci"""
 
-__version__ = "0.07"
+__version__ = "0.08"
 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QSplashScreen, QLabel, QGridLayout, QWidget, QCheckBox, QFormLayout, QSystemTrayIcon, QComboBox, QTextEdit, QLineEdit, QDialogButtonBox, QSpacerItem, QSizePolicy, QMenu, QAction, QStyle, qApp, QVBoxLayout, QPushButton, QDialog, QDesktopWidget, QFileDialog, QMessageBox
 from PyQt5.QtCore import Qt, QSize, QTimer
@@ -104,6 +104,7 @@ class MsgDialog(QDialog):
 
         layout = QVBoxLayout()
         message = QLabel(msg)
+        message.setWordWrap(True)
         space = QLabel(' ')
         layout.addWidget(message)
         layout.addWidget(space)
@@ -123,6 +124,7 @@ class IconMsgBox(QDialog):
 
         layout = QVBoxLayout()
         message = QLabel(msg)
+        message.setWordWrap(True)
         img = None
         if icon != None:
             img = QLabel()
@@ -149,6 +151,7 @@ class ChoiceDialog(QDialog):
 
         layout = QVBoxLayout()
         message = QLabel(msg)
+        message.setWordWrap(True)
         space = QLabel(' ')
         layout.addWidget(message)
         layout.addWidget(space)
@@ -168,6 +171,7 @@ class IconChoiceMsgBox(QDialog):
 
         layout = QVBoxLayout()
         message = QLabel(msg)
+        message.setWordWrap(True)
         img = None
         if icon != None:
             img = QLabel()
@@ -198,6 +202,7 @@ class OptionsDialog(QDialog):
 
         layout = QVBoxLayout()
         message = QLabel(msg)
+        message.setWordWrap(True)
         space = QLabel(' ')
         layout.addWidget(message)
         layout.addWidget(self.combobox)
@@ -226,6 +231,7 @@ class IconOptionsMsgBox(QDialog):
 
         layout = QVBoxLayout()
         message = QLabel(msg)
+        message.setWordWrap(True)
         img = None
         if icon != None:
             img = QLabel()
@@ -257,8 +263,10 @@ class TextEditDialog(QDialog):
         self.buttonBox.rejected.connect(self.reject)
 
         layout = QFormLayout()
+        space = QLabel(' ')
         self.setLayout(layout)
         message = QLabel(msg)
+        message.setWordWrap(True)
         layout.addRow(message)
         self.text_edit = QTextEdit(self)
         layout.addRow(self.text_edit)
@@ -283,6 +291,7 @@ class IconEditTextMsgBox(QDialog):
         layout = QFormLayout()
         self.setLayout(layout)
         message = QLabel(msg)
+        message.setWordWrap(True)
         img = None
         if icon != None:
             img = QLabel()
@@ -316,6 +325,7 @@ class IconCopyTextMsgBox(QDialog):
         layout = QFormLayout()
         self.setLayout(layout)
         message = QLabel(msg)
+        message.setWordWrap(True)
         img = None
         if icon != None:
             img = QLabel()
@@ -354,6 +364,7 @@ class IconUserTextMsgBox(QDialog):
         layout = QFormLayout()
         self.setLayout(layout)
         message = QLabel(msg)
+        message.setWordWrap(True)
         self.acct_lbl = QLabel("Account")
         img = None
         if icon != None:
@@ -388,6 +399,7 @@ class IconPasswordTextMsgBox(QDialog):
         layout = QFormLayout()
         self.setLayout(layout)
         message = QLabel(msg)
+        message.setWordWrap(True)
         self.pw_lbl = QLabel("Password")
         img = None
         if icon != None:
@@ -421,25 +433,27 @@ class IconUserPasswordTextMsgBox(QDialog):
         layout = QFormLayout()
         self.setLayout(layout)
         message = QLabel(msg)
+        message.setWordWrap(True)
         self.acct_lbl = QLabel("Account")
         self.pw_lbl = QLabel("Password")
         img = None
         if icon != None:
             img = QLabel()
             img.setPixmap(QPixmap(icon).scaledToHeight(32, Qt.SmoothTransformation))
-        space1 = QLabel(' ')
-        space2 = QLabel(' ')
+        space = QLabel(' ')
+
         if img:
              layout.addRow(img)
+        
         layout.addRow(message)
-        layout.addRow(space1)
+
         self.acct = QLineEdit(self)
         self.pw = PasswordEdit(self)
         layout.addRow(self.acct_lbl)
         layout.addRow(self.acct)
         layout.addRow(self.pw_lbl)
         layout.addRow(self.pw)
-        layout.addRow(space2)
+        layout.addRow(space)
         layout.addRow(self.buttonBox)
 
         if defaultTxt != None:
@@ -520,6 +534,7 @@ class IconLineCopyMsgBox(QDialog):
         layout = QFormLayout()
         self.setLayout(layout)
         message = QLabel(msg)
+        message.setWordWrap(True)
         img = None
         if icon != None:
             img = QLabel()
@@ -551,6 +566,7 @@ class ImageMsgBox(QDialog):
         layout = QFormLayout()
         self.setLayout(layout)
         message = QLabel(msg)
+        message.setWordWrap(True)
         ico = None
         if icon != None:
             ico = QLabel()
@@ -576,6 +592,7 @@ class QrMsgBox(QDialog):
         layout = QFormLayout()
         self.setLayout(layout)
         message = QLabel(msg)
+        message.setWordWrap(True)
         ico = None
         if icon:
             ico = QLabel()
@@ -606,6 +623,7 @@ class QrCopyMsgBox(QDialog):
         layout = QFormLayout()
         self.setLayout(layout)
         message = QLabel(msg)
+        message.setWordWrap(True)
         ico = None
         if icon:
             ico = QLabel()
@@ -644,6 +662,7 @@ class CustomQrMsgBox(QDialog):
         layout = QFormLayout()
         self.setLayout(layout)
         message = QLabel(msg)
+        message.setWordWrap(True)
         self.needStyle.append(message)
         ico = None
         if icon:
@@ -684,6 +703,7 @@ class CustomQrCopyMsgBox(QDialog):
         layout = QFormLayout()
         self.setLayout(layout)
         message = QLabel(msg)
+        message.setWordWrap(True)
         self.needStyle.append(message)
         ico = None
         if icon:
