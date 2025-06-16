@@ -1,6 +1,6 @@
 """QT5 UI Elements For HVYM, By: Fibo Metavinci"""
 
-__version__ = "0.08"
+__version__ = "0.09"
 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QSplashScreen, QLabel, QGridLayout, QWidget, QCheckBox, QFormLayout, QSystemTrayIcon, QComboBox, QTextEdit, QLineEdit, QDialogButtonBox, QSpacerItem, QSizePolicy, QMenu, QAction, QStyle, qApp, QVBoxLayout, QPushButton, QDialog, QDesktopWidget, QFileDialog, QMessageBox
 from PyQt5.QtCore import Qt, QSize, QTimer
@@ -753,6 +753,17 @@ class FileDialog(QFileDialog):
 
     def value(self):
          return self.selectedFiles()
+    
+    
+class FolderDialog(QFileDialog):
+    def __init__(self, msg, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle(msg)
+        self.setDirectory(HOME)
+        self.setFileMode(QFileDialog.DirectoryOnly)
+
+    def value(self):
+         return self.getExistingDirectory(self, 'Select Folder')
    
 
 class HVYMMainWindow(QMainWindow):
@@ -1049,6 +1060,17 @@ class HVYMMainWindow(QMainWindow):
          self.close()
 
          return result
+    
+    def FolderPopup(self, msg):
+         result = None
+         popup = FolderDialog(msg, self)
+         popup.setWindowIcon(self.WIN_ICON)
+         if popup:
+              result = popup.value()
+         self.value = result
+         self.close()
+
+         return result
         
 
 class HVYMInteraction(HVYMMainWindow):
@@ -1104,6 +1126,9 @@ class HVYMInteraction(HVYMMainWindow):
 
     def file_select_popup(self, msg, filters=None, icon=str(HVYM_LOGO_IMG)):
       self.call = self.FilePopup(msg, filters)
+
+    def folder_select_popup(self, msg, icon=str(HVYM_LOGO_IMG)):
+      self.call = self.FolderPopup(msg)
 
     def img_popup(self, msg, img, width=DEFAULT_WIDTH, icon=str(HVYM_LOGO_IMG)):
       self.call = self.IconImagePopup(msg, img, width, icon)

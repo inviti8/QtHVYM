@@ -61,6 +61,12 @@ def file_select_popup():
 
       return interaction
 
+def folder_select_popup():
+      interaction = HVYMInteraction()
+      interaction.folder_select_popup("TEST")
+
+      return interaction
+
 def img_popup():
       interaction = HVYMInteraction()
       interaction.img_popup("TEST", IMG)
@@ -120,6 +126,7 @@ def icp_qr_popup():
 #print(copy_text_popup().value)
 #print(choice_popup().value)
 #print(file_select_popup().value)
+print(folder_select_popup().value)
 #img_popup()
 #qr_popup()
 #qr_copy_popup()
