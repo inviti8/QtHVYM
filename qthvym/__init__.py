@@ -1,6 +1,6 @@
 """QT5 UI Elements For HVYM, By: Fibo Metavinci"""
 
-__version__ = "0.09"
+__version__ = "0.10"
 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QSplashScreen, QLabel, QGridLayout, QWidget, QCheckBox, QFormLayout, QSystemTrayIcon, QComboBox, QTextEdit, QLineEdit, QDialogButtonBox, QSpacerItem, QSizePolicy, QMenu, QAction, QStyle, qApp, QVBoxLayout, QPushButton, QDialog, QDesktopWidget, QFileDialog, QMessageBox
 from PyQt5.QtCore import Qt, QSize, QTimer
@@ -1103,11 +1103,11 @@ class HVYMInteraction(HVYMMainWindow):
       else:
            self.call = self.IconOptionsPopup(msg, options, icon)
       
-    def edit_line_popup(self, msg, options, defaultText=None, icon=str(HVYM_LOGO_IMG)):
+    def edit_line_popup(self, msg, defaultText=None, icon=str(HVYM_LOGO_IMG)):
       if icon == None:
-           self.call = self.EditLinePopup(msg, options, defaultText)
+           self.call = self.EditLinePopup(msg, defaultText)
       else:
-           self.call = self.IconEditLinePopup(msg, options, defaultText, icon)
+           self.call = self.IconEditLinePopup(msg, defaultText, icon)
 
     def user_popup(self, msg, icon=str(HVYM_LOGO_IMG)):
       self.call = self.IconUserPopup(msg, icon)

@@ -36,6 +36,12 @@ def user_password_popup():
 
       return interaction
 
+def edit_line_popup():
+      interaction = HVYMInteraction()
+      interaction.edit_line_popup("TEST", "defaultText")
+
+      return interaction
+
 def copy_line_popup():
       interaction = HVYMInteraction()
       interaction.copy_line_popup("TEST", "defaultText")
@@ -122,11 +128,12 @@ def icp_qr_popup():
 #print(user_popup().value)
 #print(password_popup().value)
 #print(user_password_popup().value)
+print(edit_line_popup().value)
 #print(copy_line_popup().value)
 #print(copy_text_popup().value)
 #print(choice_popup().value)
 #print(file_select_popup().value)
-print(folder_select_popup().value)
+#print(folder_select_popup().value)
 #img_popup()
 #qr_popup()
 #qr_copy_popup()
