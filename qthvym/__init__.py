@@ -6,6 +6,11 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QSplashScreen, QLabel, QG
 from PyQt5.QtCore import Qt, QSize, QTimer
 from PyQt5.QtGui import QIcon, QPixmap, QImage
 from qthvym.passwordedit import PasswordEdit
+from qthvym.ui_helpers import (
+    prepare_dialog_for_dynamic_sizing,
+    center_on_screen,
+    apply_app_stylesheet_if_env,
+)
 from pathlib import Path
 import pyperclip
 import tempfile
@@ -46,6 +51,7 @@ STELLAR_FG_RGB = (236, 240, 243)
 ICP_BG_RGB = (136, 100, 212)
 ICP_FG_RGB = (70, 14, 189)
 APP = QApplication(sys.argv)
+apply_app_stylesheet_if_env()
 
 MIN_WIDTH = 550
 MIN_HEIGHT = 450
@@ -136,6 +142,7 @@ class IconMsgBox(QDialog):
         layout.addWidget(space)
         layout.addWidget(self.buttonBox)
         self.setLayout(layout)
+        prepare_dialog_for_dynamic_sizing(self, layout, allow_resize=True)
 
 
 class ChoiceDialog(QDialog):
@@ -398,6 +405,7 @@ class IconPasswordTextMsgBox(QDialog):
 
         layout = QFormLayout()
         self.setLayout(layout)
+        prepare_dialog_for_dynamic_sizing(self, layout, allow_resize=True)
         message = QLabel(msg)
         message.setWordWrap(True)
         self.pw_lbl = QLabel("Password")
@@ -798,10 +806,7 @@ class HVYMMainWindow(QMainWindow):
       self.hide()
 
     def _center(self):
-        qr = self.frameGeometry()
-        cp = QDesktopWidget().availableGeometry().center()
-        qr.moveCenter(cp)
-        self.move(qr.topLeft())
+        center_on_screen(self)
 
     def Close(self):
           self.close()
@@ -829,8 +834,7 @@ class HVYMMainWindow(QMainWindow):
     def IconMessagePopup(self, message, icon):
           popup = IconMsgBox(message, icon, self)
           popup.setWindowIcon(self.WIN_ICON)
-          popup.setMinimumSize(MIN_WIDTH, MIN_HEIGHT)
-          popup.setMaximumSize(MIN_WIDTH+50, MIN_HEIGHT+75)
+          center_on_screen(popup)
           popup.exec()
           self.close()
 
@@ -973,8 +977,7 @@ class HVYMMainWindow(QMainWindow):
          result = None
          popup = IconPasswordTextMsgBox(message, icon, self)
          popup.setWindowIcon(self.WIN_ICON)
-         popup.setMinimumSize(MIN_WIDTH, MIN_HEIGHT)
-         popup.setMaximumSize(MIN_WIDTH+50, MIN_HEIGHT+75)
+         center_on_screen(popup)
          if popup.exec():
                 result = popup.value()
          self.value = result

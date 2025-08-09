@@ -1,149 +1,75 @@
-from qthvym import *
+from pathlib import Path
+import os
 
-FILE_PATH = Path(__file__).parent 
+from PyQt5.QtCore import QTimer
+from qthvym import (
+    MsgDialog,
+    IconMsgBox,
+    ChoiceDialog,
+    IconChoiceMsgBox,
+    OptionsDialog,
+    IconOptionsMsgBox,
+    TextEditDialog,
+    IconEditTextMsgBox,
+    IconCopyTextMsgBox,
+    LineEditDialog,
+    IconLineEditMsgBox,
+    IconLineCopyMsgBox,
+    ImageMsgBox,
+    QrMsgBox,
+    QrCopyMsgBox,
+    CustomQrMsgBox,
+    IconPasswordTextMsgBox,
+    IconUserPasswordTextMsgBox,
+    HVYM_IMG,
+    HVYM_LOGO_IMG,
+)
+from qthvym.ui_helpers import center_on_screen
+
+
+FILE_PATH = Path(__file__).parent
 IMG = os.path.join(FILE_PATH, 'img.png')
 
 
-def splash():
-    interaction = HVYMInteraction()
-    interaction.splash("TEST!! TEST WITH LONG TEXT CAN TEXT WRAP??")
-
-def msg_popup():
-      interaction = HVYMInteraction()
-      interaction.msg_popup("TEST!!! TEST WITH LONG TEXT CAN TEXT WRAP??")
-
-def options_popup():
-      interaction = HVYMInteraction()
-      interaction.options_popup("TEST!!!!! TEST WITH LONG TEXT CAN TEXT WRAP??", ['1', '2', '3'])
-      
-      return interaction
-
-def user_popup():
-      interaction = HVYMInteraction()
-      interaction.user_popup("TEST WITH LONG TEXT CAN TEXT WRAP??")
-
-      return interaction
-
-def password_popup():
-      interaction = HVYMInteraction()
-      interaction.password_popup("TEST TEST WITH LONG TEXT CAN TEXT WRAP??")
-
-      return interaction
-
-def user_password_popup():
-      interaction = HVYMInteraction()
-      interaction.user_password_popup("TEST WITH LONG TEXT CAN TEXT WRAP??", "defaultText")
-
-      return interaction
-
-def edit_line_popup():
-      interaction = HVYMInteraction()
-      interaction.edit_line_popup("TEST", "defaultText")
-
-      return interaction
-
-def copy_line_popup():
-      interaction = HVYMInteraction()
-      interaction.copy_line_popup("TEST", "defaultText")
-
-      return interaction
-
-def copy_text_popup():
-      interaction = HVYMInteraction()
-      interaction.copy_text_popup("TEST", "defaultText")
-
-      return interaction
-
-def choice_popup():
-      """ Show choice popup, message based on passed msg arg."""
-      interaction = HVYMInteraction()
-      interaction.choice_popup("TEST?")
-
-      return interaction
-
-def file_select_popup():
-      interaction = HVYMInteraction()
-      interaction.file_select_popup("TEST", ["Images (*.png *.svg)"])
-
-      return interaction
-
-def folder_select_popup():
-      interaction = HVYMInteraction()
-      interaction.folder_select_popup("TEST")
-
-      return interaction
-
-def img_popup():
-      interaction = HVYMInteraction()
-      interaction.img_popup("TEST", IMG)
-
-      return interaction
-
-def qr_popup():
-      interaction = HVYMInteraction()
-      interaction.qr_popup("TEST", "This is some test data")
-
-      return interaction
-
-def qr_copy_popup():
-      interaction = HVYMInteraction()
-      interaction.qr_copy_popup("TEST", "This is some test data")
-
-      return interaction
-
-def custom_qr_popup():
-      interaction = HVYMInteraction()
-      interaction.custom_qr_popup("TEST", "This is some test data", 400, IMG, (249, 194, 10), (127, 36, 103))
-
-      return interaction
-
-def xro_qr_popup():
-      interaction = HVYMInteraction()
-      interaction.xro_qr_popup("Send Tokens Here:", "This is some test data")
-
-      return interaction
-
-def opus_qr_popup():
-      interaction = HVYMInteraction()
-      interaction.opus_qr_popup("Send Tokens Here: TEST WITH LONG TEXT CAN TEXT WRAP?? TEST WITH LONG TEXT CAN TEXT WRAP??", "This is some test data")
-
-      return interaction
-
-def stellar_qr_popup():
-      interaction = HVYMInteraction()
-      interaction.stellar_qr_popup("Send Tokens Here: TEST WITH LONG TEXT CAN TEXT WRAP?? TEST WITH LONG TEXT CAN TEXT WRAP??", "This is some test data")
-
-      return interaction
-
-def icp_qr_popup():
-      interaction = HVYMInteraction()
-      interaction.icp_qr_popup("Send Tokens Here: TEST WITH LONG TEXT CAN TEXT WRAP??", "This is some test data")
-
-      return interaction
+def show_for_5s(dialog):
+    center_on_screen(dialog)
+    QTimer.singleShot(5000, dialog.accept)
+    dialog.exec()
 
 
-#splash()
-#msg_popup()
-# print(options_popup().value)
-#print(user_popup().value)
-#print(password_popup().value)
-print(user_password_popup().value)
-#print(edit_line_popup().value)
-#print(copy_line_popup().value)
-#print(copy_text_popup().value)
-#print(choice_popup().value)
-#print(file_select_popup().value)
-#print(folder_select_popup().value)
-#img_popup()
-#qr_popup()
-#qr_copy_popup()
-#custom_qr_popup()
-#xro_qr_popup()
-#opus_qr_popup()
-#stellar_qr_popup()
+def run_all_popups():
+    # Basic message dialogs
+    show_for_5s(MsgDialog("Message dialog: long text should wrap properly."))
+    show_for_5s(IconMsgBox("Icon message: long text should wrap properly.", icon=str(HVYM_LOGO_IMG)))
+
+    # Choice dialogs
+    show_for_5s(ChoiceDialog("Choice dialog: auto-closes in 5s."))
+    show_for_5s(IconChoiceMsgBox("Icon choice dialog: auto-closes in 5s.", icon=str(HVYM_LOGO_IMG)))
+
+    # Options dialogs
+    show_for_5s(OptionsDialog("Options dialog: select value.", ['1', '2', '3']))
+    show_for_5s(IconOptionsMsgBox("Icon options dialog: select value.", ['1', '2', '3'], icon=str(HVYM_LOGO_IMG)))
+
+    # Text edit dialogs
+    show_for_5s(TextEditDialog("Text edit dialog:", defaultTxt="default text"))
+    show_for_5s(IconEditTextMsgBox("Icon text edit dialog:", defaultTxt="default text", icon=str(HVYM_LOGO_IMG)))
+    show_for_5s(IconCopyTextMsgBox("Icon copy text dialog:", defaultTxt="default text", icon=str(HVYM_LOGO_IMG)))
+
+    # Line edit dialogs
+    show_for_5s(LineEditDialog("Line edit dialog:", defaultTxt="default text"))
+    show_for_5s(IconLineEditMsgBox("Icon line edit dialog:", defaultTxt="default text", icon=str(HVYM_LOGO_IMG)))
+    show_for_5s(IconLineCopyMsgBox("Icon line copy dialog:", defaultTxt="default text", icon=str(HVYM_LOGO_IMG)))
+
+    # Password dialogs
+    show_for_5s(IconPasswordTextMsgBox("Password dialog:", icon=str(HVYM_LOGO_IMG)))
+    show_for_5s(IconUserPasswordTextMsgBox("User + Password dialog:", defaultTxt="user@example", icon=str(HVYM_LOGO_IMG)))
+
+    # Media dialogs
+    show_for_5s(ImageMsgBox("Image dialog:", IMG, width=400, icon=str(HVYM_LOGO_IMG)))
+    show_for_5s(QrMsgBox("QR dialog:", data="This is some test data", width=400, icon=str(HVYM_LOGO_IMG)))
+    show_for_5s(QrCopyMsgBox("QR copy dialog:", data="This is some test data", width=400, icon=str(HVYM_LOGO_IMG)))
+    show_for_5s(CustomQrMsgBox("Custom QR dialog:", data="This is some test data", width=400, cntrImg=HVYM_IMG, back_color=(152,49,74), front_color=(175,232,197), icon=str(HVYM_LOGO_IMG)))
 
 
-
-
-
-    
+if __name__ == "__main__":
+    run_all_popups()
