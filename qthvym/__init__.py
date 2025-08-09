@@ -1,6 +1,6 @@
 """QT5 UI Elements For HVYM, By: Fibo Metavinci"""
 
-__version__ = "0.15"
+__version__ = "0.16"
 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QSplashScreen, QLabel, QGridLayout, QWidget, QCheckBox, QFormLayout, QSystemTrayIcon, QComboBox, QTextEdit, QLineEdit, QDialogButtonBox, QSpacerItem, QSizePolicy, QMenu, QAction, QStyle, qApp, QVBoxLayout, QPushButton, QDialog, QDesktopWidget, QFileDialog, QMessageBox
 from PyQt5.QtCore import Qt, QSize, QTimer
