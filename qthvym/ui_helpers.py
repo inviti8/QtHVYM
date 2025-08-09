@@ -1,8 +1,9 @@
 import os
 from pathlib import Path
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QApplication, QLayout, QDialog
+from PyQt5.QtGui import QClipboard
 
 
 def center_on_screen(widget) -> None:
@@ -53,5 +54,42 @@ def apply_app_stylesheet_if_env() -> None:
     val = os.environ.get("HVYM_USE_QSS", "0").strip().lower()
     if val in {"1", "true", "yes", "on"}:
         apply_app_stylesheet()
+
+
+def copy_to_clipboard(text: str, ensure_flush: bool = False) -> bool:
+    """Copy text to system clipboard using Qt (non-blocking).
+
+    Returns True on success. If no QApplication is present, falls back to
+    pyperclip (which may block on some systems).
+    """
+    app = QApplication.instance()
+    if app is not None:
+        cb: QClipboard = app.clipboard()
+        cb.setText(text, mode=QClipboard.Clipboard)
+        # Also set selection clipboard on X11-like platforms
+        try:
+            cb.setText(text, mode=QClipboard.Selection)  # type: ignore[attr-defined]
+        except Exception:
+            pass
+        if ensure_flush:
+            # Give Qt a turn to propagate clipboard data
+            app.processEvents()
+        return True
+    # Fallback (not preferred)
+    try:
+        import pyperclip  # type: ignore
+        pyperclip.copy(text)
+        return True
+    except Exception:
+        return False
+
+
+def copy_to_clipboard_async(text: str) -> None:
+    """Queue a clipboard copy on the next event loop iteration."""
+    app = QApplication.instance()
+    if app is None:
+        copy_to_clipboard(text)
+        return
+    QTimer.singleShot(0, lambda: copy_to_clipboard(text))
 
 

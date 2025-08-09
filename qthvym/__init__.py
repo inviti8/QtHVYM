@@ -10,6 +10,7 @@ from qthvym.ui_helpers import (
     prepare_dialog_for_dynamic_sizing,
     center_on_screen,
     apply_app_stylesheet_if_env,
+    copy_to_clipboard_async,
 )
 from pathlib import Path
 import pyperclip
@@ -354,7 +355,7 @@ class IconCopyTextMsgBox(QDialog):
         return self.text_edit.toPlainText()
     
     def copy(self):
-         pyperclip.copy(self.text_edit.toPlainText())
+         copy_to_clipboard_async(self.text_edit.toPlainText())
 
 
 class IconUserTextMsgBox(QDialog):
@@ -564,7 +565,7 @@ class IconLineCopyMsgBox(QDialog):
         return self.text_edit.text()
 
     def copy(self):
-         pyperclip.copy(self.text_edit.text())
+         copy_to_clipboard_async(self.text_edit.text())
 
 class ImageMsgBox(QDialog):
     def __init__(self, msg, img, width=DEFAULT_WIDTH, icon=None, parent=None):
@@ -682,8 +683,7 @@ class QrCopyMsgBox(QDialog):
         return None
     
     def copy(self):
-         pyperclip.copy(self.text_edit.text())
-         QApplication.processEvents() 
+         copy_to_clipboard_async(self.text_edit.text())
 
 
 class CustomQrMsgBox(QDialog):
@@ -772,7 +772,7 @@ class CustomQrCopyMsgBox(QDialog):
         return None
     
     def copy(self):
-         pyperclip.copy(self.text_edit.text())
+         copy_to_clipboard_async(self.text_edit.text())
 
 
 class FileDialog(QFileDialog):
