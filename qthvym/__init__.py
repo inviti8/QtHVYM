@@ -576,18 +576,43 @@ class ImageMsgBox(QDialog):
         message = QLabel(msg)
         message.setWordWrap(True)
         ico = None
-        if icon != None:
+        if icon is not None:
             ico = QLabel()
-            ico.setPixmap(QPixmap(icon).scaledToHeight(32, Qt.SmoothTransformation))
+            ico.setPixmap(QPixmap(str(icon)).scaledToHeight(32, Qt.SmoothTransformation))
         space = QLabel(' ')
         if ico:
-             layout.addWidget(ico)
+            layout.addWidget(ico)
+
         imgLabel = QLabel()
-        pixmap = QPixmap(img).scaledToWidth(width, Qt.SmoothTransformation)
-        imgLabel.setPixmap(pixmap)
+        imgLabel.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        imgLabel.setScaledContents(False)
+
+        # Robust image load (absolute path + QImageReader)
+        try:
+            from PyQt5.QtGui import QImageReader
+            from pathlib import Path as _Path
+            img_path = _Path(str(img))
+            if not img_path.is_absolute():
+                img_path = (_Path.cwd() / img_path).resolve()
+            reader = QImageReader(str(img_path))
+            if reader.canRead():
+                image = reader.read()
+                pix = QPixmap.fromImage(image)
+            else:
+                pix = QPixmap(str(img_path))
+        except Exception:
+            pix = QPixmap(str(img))
+
+        if not pix.isNull():
+            pix = pix.scaledToWidth(width, Qt.SmoothTransformation)
+            imgLabel.setPixmap(pix)
+        else:
+            imgLabel.setText(f"Failed to load image: {img}")
+
         layout.addWidget(message)
         layout.addRow(space)
         layout.addWidget(imgLabel)
+        prepare_dialog_for_dynamic_sizing(self, layout, allow_resize=True)
 
     def value(self):
         return None
