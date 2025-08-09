@@ -28,7 +28,7 @@ from qthvym.ui_helpers import center_on_screen
 
 
 FILE_PATH = Path(__file__).parent
-IMG = os.path.join(FILE_PATH, 'img.png')
+IMG = Path(HVYM_IMG).resolve()
 
 
 def show_for_5s(dialog):
@@ -65,7 +65,7 @@ def run_all_popups():
     show_for_5s(IconUserPasswordTextMsgBox("User + Password dialog:", defaultTxt="user@example", icon=str(HVYM_LOGO_IMG)))
 
     # Media dialogs
-    show_for_5s(ImageMsgBox("Image dialog:", IMG, width=400, icon=str(HVYM_LOGO_IMG)))
+    show_for_5s(ImageMsgBox("Image dialog:", str(IMG), width=400, icon=str(HVYM_LOGO_IMG)))
     show_for_5s(QrMsgBox("QR dialog:", data="This is some test data", width=400, icon=str(HVYM_LOGO_IMG)))
     show_for_5s(QrCopyMsgBox("QR copy dialog:", data="This is some test data", width=400, icon=str(HVYM_LOGO_IMG)))
     show_for_5s(CustomQrMsgBox("Custom QR dialog:", data="This is some test data", width=400, cntrImg=HVYM_IMG, back_color=(152,49,74), front_color=(175,232,197), icon=str(HVYM_LOGO_IMG)))
