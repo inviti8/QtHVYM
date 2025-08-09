@@ -1,7 +1,10 @@
 from qthvym import *
+import time
+import sys
 
 FILE_PATH = Path(__file__).parent 
 IMG = os.path.join(FILE_PATH, 'img.png')
+GIF = os.path.join(FILE_PATH, 'loading.gif')
 
 
 def splash():
@@ -121,10 +124,16 @@ def icp_qr_popup():
 
       return interaction
 
+def gif_anim():
+      interaction = HVYMInteraction()
+      interaction.gif_anim("TEST", GIF)
+
+      return interaction
+
 
 #splash()
 #msg_popup()
-# print(options_popup().value)
+#print(options_popup().value)
 #print(user_popup().value)
 #print(password_popup().value)
 print(user_password_popup().value)
@@ -141,6 +150,10 @@ print(user_password_popup().value)
 #xro_qr_popup()
 #opus_qr_popup()
 #stellar_qr_popup()
+
+gif = gif_anim()
+time.sleep(3)
+gif.anim.close_anim()
 
 
 
