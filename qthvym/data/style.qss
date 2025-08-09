@@ -669,7 +669,7 @@ QComboBox
     border: 1px solid #76797C;
     border-radius: 2px;
     padding: 5px;
-    min-width: 75px;
+    /* min-width removed to allow dynamic sizing */
 }
 
 QPushButton:checked{
@@ -775,7 +775,7 @@ QAbstractSpinBox {
     background-color: #1e1e1e;
     color: #eff0f1;
     border-radius: 0px;
-    min-width: 75px;
+    /* min-width removed to allow dynamic sizing */
     selection-background-color: #fff4c9;
     selection-color: black;
 }
@@ -882,7 +882,7 @@ QTabBar::tab:top {
     border-bottom: 1px transparent black;
     background-color: #98314a;
     padding: 5px;
-    min-width: 50px;
+    /* min-width removed to allow dynamic sizing */
     border-top-left-radius: 2px;
     border-top-right-radius: 2px;
 }
@@ -911,7 +911,7 @@ QTabBar::tab:bottom {
     padding: 5px;
     border-bottom-left-radius: 2px;
     border-bottom-right-radius: 2px;
-    min-width: 50px;
+    /* min-width removed to allow dynamic sizing */
 }
 
 QTabBar::tab:bottom:!selected
@@ -938,7 +938,7 @@ QTabBar::tab:left {
     padding: 5px;
     border-top-right-radius: 2px;
     border-bottom-right-radius: 2px;
-    min-height: 50px;
+    /* min-height removed to allow dynamic sizing */
 }
 
 QTabBar::tab:left:!selected
@@ -966,7 +966,7 @@ QTabBar::tab:right {
     padding: 5px;
     border-top-left-radius: 2px;
     border-bottom-left-radius: 2px;
-    min-height: 50px;
+    /* min-height removed to allow dynamic sizing */
 }
 
 QTabBar::tab:right:!selected
@@ -1340,7 +1340,7 @@ QDateEdit
     border: 1px solid #CEE343;
     border-radius: 2px;
     padding: 1px;
-    min-width: 75px;
+    /* min-width removed to allow dynamic sizing */
 }
 
 QDateEdit:on
