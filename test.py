@@ -124,10 +124,10 @@ def icp_qr_popup():
 
 #splash()
 #msg_popup()
-print(options_popup().value)
+# print(options_popup().value)
 #print(user_popup().value)
 #print(password_popup().value)
-#print(user_password_popup().value)
+print(user_password_popup().value)
 #print(edit_line_popup().value)
 #print(copy_line_popup().value)
 #print(copy_text_popup().value)

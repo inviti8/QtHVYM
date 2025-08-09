@@ -14,7 +14,6 @@ PyQt5-Qt5>=5.15.2
 PyQt5_sip>=12.17.0
 QtPy>=2.4.2
 qrcode>=8.0
-qtwidgets>=1.1
 requests>=2.32.3
 tomli_w>=1.2.0
 urllib3>=2.4.0
