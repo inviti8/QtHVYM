@@ -1,6 +1,6 @@
 """QT5 UI Elements For HVYM, By: Fibo Metavinci"""
 
-__version__ = "0.16"
+__version__ = "0.17"
 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QSplashScreen, QLabel, QGridLayout, QWidget, QCheckBox, QFormLayout, QSystemTrayIcon, QComboBox, QTextEdit, QLineEdit, QDialogButtonBox, QSpacerItem, QSizePolicy, QMenu, QAction, QStyle, qApp, QVBoxLayout, QPushButton, QDialog, QDesktopWidget, QFileDialog, QMessageBox
 from PyQt5.QtCore import Qt, QSize, QTimer
@@ -54,8 +54,8 @@ ICP_FG_RGB = (70, 14, 189)
 APP = QApplication(sys.argv)
 apply_app_stylesheet_if_env()
 
-MIN_WIDTH = 550
-MIN_HEIGHT = 450
+MIN_WIDTH = 350
+MIN_HEIGHT = 250
 
 def basic_qr_code(data):
     qr = qrcode.QRCode(
@@ -495,7 +495,7 @@ class LineEditDialog(QDialog):
               self.text_edit.setText(defaultTxt)
 
     def value(self):
-         return self.edit_text.text()
+         return self.text_edit.text()
 
 
 class IconLineEditMsgBox(QDialog):
@@ -1002,6 +1002,8 @@ class HVYMMainWindow(QMainWindow):
          result = None
          popup = IconPasswordTextMsgBox(message, icon, self)
          popup.setWindowIcon(self.WIN_ICON)
+         popup.setMinimumSize(MIN_WIDTH, MIN_HEIGHT)
+         popup.setMaximumSize(MIN_WIDTH+50, MIN_HEIGHT)
          center_on_screen(popup)
          if popup.exec():
                 result = popup.value()
